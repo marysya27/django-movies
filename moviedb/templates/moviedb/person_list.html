@@ -1,0 +1,37 @@
+{% extends 'moviedb/base.html' %}
+{% block title %}
+People
+{% endblock %}
+{% block content %}
+    <span class="title">PEOPLE</span>
+    <hr class="thin-line">
+    <hr class="bold-line">
+    <div class="cast-list">
+        <ul class="ul-cast-list">
+            {% for p in person %}
+                {% if p.profile_path %}
+                    <form method="post" action="{% url 'descperson' p.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="known_for" value="{{ p.known_for }}">
+                        <button type="submit" class="button-each-person-list">
+                            <div class="person-list">
+                                <img class="cast-photo" src="{{ path|add:p.profile_path }}" alt="">
+                                <li class="cast-name">{{ p.name }}</li>
+                            </div>
+                        </button>
+                    </form>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div> 
+    <div class="pagination">
+        {% for page in totalPages %}
+            {% if page == number_page  %}
+                <span class="pagin-page select-pagin-page">{{ page }}</span>
+            {% else %}
+                <span class="pagin-page"><a href="{% url page_name page %}">{{ page }}</a></span>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
+

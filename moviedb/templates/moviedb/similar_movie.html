@@ -1,0 +1,27 @@
+{% extends 'moviedb/base.html' %}
+{% block title %}
+    Similar movies
+{% endblock %}
+{% block content %}
+<div class="navigation">
+    <p class="plot">SIMILAR MOVIES</p><a class="cast-similar-description" href="{% url 'desc' pk %}">Description</a><a class="link-cast-similar" href="{% url 'cast' pk %}">Cast</a>
+</div>
+<hr class="thin-line">
+<hr class="bold-line">
+<div class="list-movies">
+    <ul class="ul-list-movies">
+        {% for movie in movies %}
+            {% if movie.poster_path %}
+                <a class='link-movie' href="{% url 'desc' movie.id %}">
+                    <div class="movie">
+                        <p class="vote_average-list">{{ movie.vote_average }} <span class="star-icon">&#9733;</span></p>
+                        <img class="movie-poster-list" src="{{ path|add:movie.poster_path }}" alt="">
+                        <li class="movie-title-list">{{ movie.title }}</li>
+                        <p class="release_date-list">{{ movie.release_date }}</p>
+                    </div>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

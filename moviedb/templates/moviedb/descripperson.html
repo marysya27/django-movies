@@ -1,0 +1,38 @@
+{% extends 'moviedb/base.html' %}
+{% block title %}
+{{ person.name }}
+{% endblock %}
+{% block content %}
+<hr class="upper-line">
+<div class="description-person">
+    <div class="left-column">
+        <img class="description-person-img" src="{{ path|add:person.profile_path }}" alt="">
+        <div class="facts-left-column">
+            <span>Birthday</span>
+            <span>{{ person.birthday }}</span>
+            {% if person.deathday %}
+                <span>Day of Death</span>
+                <span>{{ person.deathday }}</span>
+            {% endif %}
+            <span>Place of Birth</span>
+            <span>{{ person.place_of_birth }}</span>
+        </div>
+    </div>
+            <div class="inform-each-person">
+                <span class="name-each-person">{{ person.name }}</span>
+                <span class="biography-each-person-span">Biography</span>
+                <div class="biography-each-person-text">
+                    <p>{{ person.biography|linebreaks  }}</p>
+                </div>
+            </div>
+</div>
+<span class="known-for-movie-span">Known For</span>
+<div class="known-for-movie">
+    {% for k in known_for_movie %}
+        <div style="display: grid;">
+            <a href="{% url 'desc' k.id_movie %}"><img class="known-for-movie-img" src="{{ path|add:k.poster_path }}" alt=""></a>
+            <span class="known_for_movie-title">{{ k.title }}</span>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

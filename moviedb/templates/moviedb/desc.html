@@ -1,0 +1,63 @@
+{% extends 'moviedb/base.html' %}
+{% block title %}
+{{ d.title }}
+{% endblock %}
+{% block content %}
+    <img class="poster-desc" src="{{ path|add:d.poster_path }}" alt="">
+    <div class="context-desc">
+        <h1 class="movie-title-desc">{{ d.title }}</h1>
+        <span class="movie-release-date-desc">Release date: {{ d.release_date }}</span>
+        <span class="movie-tagline-desc">Tagline: {{ d.tagline }}</span>
+        <span class="movie-status-desc">Status: {{ d.status }}</span>
+        <span class="movie-rating-desc">Rating:</span>
+        <div class="rating-stars">
+            {% for f in filled_stars %}
+                <span class="filled-stars-icon">&#9733;</span>
+            {% endfor %}
+    
+            {% for e in empty_stars %}
+            <span class="empty-stars-icon">&#9733;</span>
+            {% endfor %}
+            <span class="vote-desc">/ {{ d.vote_average }} / votes {{ d.vote_count }}</span>
+        </div>
+        <span class="all-info">Country</span>
+        <i class="i-info">{{ country }}</i>
+
+        <span class="all-info">Production Companys</span>
+        <i class="i-info">{{ companys }}</i>
+
+        <span class="all-info">Runtime</span>
+        <i class="i-info">{{ d.runtime }} min</i>
+
+        <span class="all-info">Genres</span>
+        <i class="i-info">{{ genres }}</i>
+        
+        <span class="all-info">Budget</span>
+        <i class="i-info">${{ budget }}</i>
+
+        <span class="all-info">Revenue</span>
+        <i class="i-info">${{ revenue }}</i>
+    </div>
+
+    <div class="navigation">
+        <p class="plot">PLOT</p><a class="cast-desc" href="{% url 'cast' d.id %}">Cast</a><a class="similar-desc" href="{% url 'similar' d.id %}">Similar movies</a>
+    </div>
+    <hr class="thin-line">
+    <hr class="bold-line">
+    <p class="overview">{{ d.overview }}</p>
+    
+    
+    
+    
+
+    <!-- {% for c in cast %}
+        <p>{{ c.name }}</p>
+     <img src="{{ path|add:c.profile_path }}" alt=""> 
+    {% endfor %}
+<p>---------------------------</p>
+    {% for s in sim_movie %}
+        <p>{{ s.title }}</p>
+    {% endfor %} -->
+
+{% endblock %}
+

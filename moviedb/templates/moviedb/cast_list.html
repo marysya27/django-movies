@@ -1,0 +1,24 @@
+{% extends 'moviedb/base.html' %}
+{% block title %}
+Сast
+{% endblock %}
+{% block content %}
+    <div class="navigation">
+        <p class="plot">CAST</p><a class="cast-similar-description" href="{% url 'desc' pk %}">Description</a><a class="link-cast-similar" href="{% url 'similar' pk %}">Similar movies</a>
+    </div>
+    <hr class="thin-line">
+    <hr class="bold-line">
+    <div class="cast-list">
+        <ul class="ul-cast-list">
+            {% for c in cast %}
+                {% if c.profile_path %}    
+                        <div class="cast">
+                            <img class="cast-photo" src="{{ path|add:c.profile_path }}" alt="">
+                            <li class="cast-name">{{ c.name }}</li>
+                            <span class="cast-character">{{ c.character }}</span>
+                        </div>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>  
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'moviedb/base.html' %}
+{% block title %}
+{{ page_name }} movies
+{% endblock %}
+{% block content %}
+<span class="title">{{ page_name }}</span>
+<hr class="thin-line">
+<hr class="bold-line">
+    <!-- <h1 class="page-name">{{ page_name }} movies</h1> -->
+<div class="list-movies">
+    <ul class="ul-list-movies">
+        {% for movie in movies %}
+            <a class='link-movie' href="{% url 'desc' movie.id %}">
+                <div class="movie">
+                    <p class="vote_average-list">{{ movie.vote_average }} <span class="star-icon">&#9733;</span></p>
+                    <img class="movie-poster-list" src="{{ path|add:movie.poster_path }}" alt="">
+                    <li class="movie-title-list">{{ movie.title }}</li>
+                    <p class="release_date-list">{{ movie.release_date }}</p>
+                </div>
+             </a>
+        {% endfor %}
+    </ul>
+</div>
+
+    <div class="pagination">
+        {% for page in totalPages %}
+            {% if page == number_page  %}
+                <span class="pagin-page select-pagin-page">{{ page }}</span>
+            {% else %}
+                <span class="pagin-page"><a href="{% url page_name page %}">{{ page }}</a></span>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
+

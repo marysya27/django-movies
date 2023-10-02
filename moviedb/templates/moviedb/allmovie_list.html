@@ -1,0 +1,110 @@
+{% extends 'moviedb/base.html' %}
+{% block title %}
+All movies
+{% endblock %}
+{% block content %}
+{% if page_name == 'home' %}
+    <div class="background-image">
+        <span>Welcome</span>
+        <span>Find your favorite movie</span>
+    </div>
+{% endif %}
+{% if movies %}
+    <span class="title">All MOVIES</span>
+    <hr class="thin-line">
+    <hr class="bold-line">
+{% endif %}
+    <div class="all-movies-back">
+        {% if page_name == 'search_movie' %}
+            <span></span>
+        {% else %}
+            <form class="left-sidebar" method="get" action="{% url 'filter' page=1 %}">
+                {% csrf_token %}
+                <ul class="ul-genres">
+                    <div>
+                        {% for genre in genres %}
+                            <li class="li-select-genre">
+                                {% if genre.id in select_genres %}
+                                    <input type="checkbox" class="genre custom-checkbox-selected" name="genres" value="{{ genre.id }}">
+                                {% else %}
+                                    <input type="checkbox" class="genre custom-checkbox" name="genres" value="{{ genre.id }}">
+                                {% endif %}
+                                <span class="select-button-genre">{{ genre.name }}</span>
+                            </li>
+                        {% endfor %}
+                    </div>
+                </ul>
+                <div class="select-year-sort">
+                    <select class="year-sort" name="year" id="year">
+                        {% if select_year %}
+                            <option value="" disabled selected>{{ select_year }}</option>
+                        {% else %}
+                            <option value="" disabled selected>Year</option>
+                        {% endif %}
+                        <option value="none">None</option>
+                        {% for year in years %}
+                            <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <select class='year-sort' name="sort" id="sort">
+                        {% if select_sort == 0 or not select_sort %}
+                            <option value="" disabled selected>Sort by</option>
+                        {% else %}
+                            <option value="" disabled selected>{{ select_sort }}</option>
+                        {% endif %} 
+                        <option value="none">None</option>
+                        <option value="primary_release_date">Release date</option>
+                        <option value="popularity">Popularity</option>
+                        <option value="vote_count">Votes count</option>
+                        <option value="revenue">Revenue</option>
+                    </select>
+                </div>    
+                <button class="apply-select-genres" name='button' value="apply" type="submit">Apply Filters</button>
+                <button class="apply-select-genres reset-select-genres" name='button' value="reset" type="submit">Reset</button>
+                        <!-- <input type="checkbox" id="input-sort" class="sort-input">
+                        <label for="input-sort" class="">oooooooo</label>
+                        <ul class="sort-ul">
+                            <li class="sort-li">1</li>
+                            <li class="sort-li">2</li>
+                            <li class="sort-li">3</li>
+                            <li class="sort-li">4</li>
+                        </ul> -->
+            </form>
+        {% endif %}
+    {% if movies %}
+        <div class="list-all-movies">
+            <ul class="ul-list-all-movies">
+                {% for movie in movies %}
+                    <a class='link-movie' href="{% url 'desc' movie.id %}">
+                        <div class="each-movie-all">
+                            <div class="inform-each-movie">
+                                <li class="each-movie-title">{{ movie.title }}</li>
+                                <p class="each-movie-release_date">{{ movie.release_date }}</p>
+                                <p class="each-movie-overview">{{ movie.overview }}</p>
+                            </div>
+                            <p class="vote-each-movie">{{ movie.vote_average }} <span class="star-icon">&#9733;</span></p>
+                            <img class="each-movie-poster" src="{{ path|add:movie.poster_path }}" alt="">
+                        </div>
+                    </a>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+    <div class="not-found">
+        <span class="not-found-movies">Nothing Found</span>
+        <svg class="svg-sad-smile" width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 17C9.85038 16.3697 10.8846 16 12 16C13.1154 16 14.1496 16.3697 15 17" stroke="#ffa507" stroke-width="1.584" stroke-linecap="round"></path> <ellipse cx="15" cy="10.5" rx="1" ry="1.5" fill="#ffa507"></ellipse> <ellipse cx="9" cy="10.5" rx="1" ry="1.5" fill="#ffa507"></ellipse> <path d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8" stroke="#ffa507" stroke-width="1.584" stroke-linecap="round"></path> </g></svg>
+    </div>
+    {% endif %} 
+</div>
+    <div class="pagination">
+        {% for page in totalPages %}
+            {% if page == number_page  %}
+                <span class="pagin-page select-pagin-page">{{ page }}</span>
+            {% else %}
+                <span class="pagin-page"><a href="{% url page_name page %}">{{ page }}</a></span>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
