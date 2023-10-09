@@ -1,7 +1,10 @@
 from django.shortcuts import render
+from django.views.generic import View, ListView, DetailView
 import requests
 import re
 from decouple import config
+
+from .utils import *
 
 path_for_img = 'https://image.tmdb.org/t/p/w500'
 
@@ -22,101 +25,254 @@ def index(url):
     return [movies, totalPages, data['page']]
 
 
-def popmovies(request, page):
-    url = f"https://api.themoviedb.org/3/movie/popular?language=en-US&page={page}"
-    return render(request, "moviedb/movie_list.html", {"movies": index(url)[0], 'totalPages':index(url)[1], 'number_page' : index(url)[2], 'page_name': 'Popular', 'path' : path_for_img})
+class PopMovies(DataMixin, ListView):
+    template_name = 'moviedb/movie_list.html'
 
-def nowmovies(request, page):
-    url = f"https://api.themoviedb.org/3/movie/now_playing?language=en-US&page={page}"
-    return render(request, "moviedb/movie_list.html", {"movies": index(url)[0], 'totalPages':index(url)[1], 'number_page' : index(url)[2], 'page_name': 'Now watching', 'path' : path_for_img})
+    def get_queryset(self):
+        page = self.kwargs.get('page')
+        print(page)
+        url = f"https://api.themoviedb.org/3/movie/popular?language=en-US&page={page}"
+        return url
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Popular')
+        context.update(movies_data)
+        return context
 
-def topmovies(request, page):
-    url = f"https://api.themoviedb.org/3/movie/top_rated?language=en-US&page={page}"
-    return render(request, "moviedb/movie_list.html", {"movies": index(url)[0], 'totalPages':index(url)[1], 'number_page' : index(url)[2], 'page_name': 'Top rated', 'path' : path_for_img})
+class NowWatchMovies(DataMixin, ListView):
+    template_name = 'moviedb/movie_list.html'
 
-def poppeople(request, page):
-    url = f"https://api.themoviedb.org/3/person/popular?language=en-US&page={page}"
-    return render(request, "moviedb/person_list.html", {"person": index(url)[0], 'totalPages':index(url)[1], 'number_page' : index(url)[2],
-                                                         'page_name': 'people', 'path' : path_for_img})
+    def get_queryset(self):
+        page = self.kwargs.get('page')
+        url = f"https://api.themoviedb.org/3/movie/now_playing?language=en-US&page={page}"
+        return url
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Now watching')
+        context.update(movies_data)
+        return context
 
-def descripperson(request, pk):
-    url = f'https://api.themoviedb.org/3/person/{pk}?api_key={api_key}'
-    response = requests.get(url)
-    data = response.json()
+class TopMovies(DataMixin, ListView):
+    template_name = 'moviedb/movie_list.html'
 
-    if request.method == 'POST':
-        known_for = request.POST.get('known_for')
+    def get_queryset(self):
+        page = self.kwargs.get('page')
+        url = f"https://api.themoviedb.org/3/movie/top_rated?language=en-US&page={page}"
+        return url
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Now watching')
+        print(movies_data)
+        context.update(movies_data)
+        return context
+
+class PeopleList(DataMixin, ListView):
+    template_name = 'moviedb/person_list.html'
+
+    def get_queryset(self):
+        page = self.kwargs.get('page')
+        url = f"https://api.themoviedb.org/3/person/popular?language=en-US&page={page}"
+        return url
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        people_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'people')
+        people_data['person'] = people_data.pop('movies')
+        context.update(people_data)
+        return context
+
+class AllMovies(DataMixin, ListView):
+
+    template_name = 'moviedb/allmovie_list.html'
+
+    def get(self, request, *args, **kwargs):
+        request.session['select_genres'] = []
+        request.session['select_year'] = ''
+        request.session['select_sort'] = ''
+        request.session['search_form_movies'] = ''
+        request.session['search_form_person'] = ''
+        return super().get(request, *args, **kwargs)
+
+    years = [i for i in range(2025, 1915, -1)]
+    url_genres = f'https://api.themoviedb.org/3/genre/movie/list?api_key={api_key}'
+    response_genres = requests.get(url_genres)
+    data_genres = response_genres.json()
+
+    def get_queryset(self):
+        page = self.kwargs.get('page')
+        url = f"https://api.themoviedb.org/3/discover/movie?language=en-US&page={page}"
+        return url
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'home')
+        context.update(movies_data)
+        context.update({'years' : self.years,  'genres' : self.data_genres['genres']})
+        return context
+
+class SearchMovie(DataMixin, ListView):
+    template_name = 'moviedb/allmovie_list.html'
+
+    def get_queryset(self):
+
+        if self.request.GET.get('search_form_movie'): 
+            query = self.request.GET.get('search_form_movie') 
+            self.request.session['search_form_movie'] = self.request.GET.get('search_form_movie')
+        else:
+            query = self.request.session.get('search_form_movie')
+
+        page = self.kwargs.get('page')
+        url = f"https://api.themoviedb.org/3/search/movie?query={query}&include_adult=false&language=en-US&page={page}"
+        return url
+
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'search_movie')
+        context.update(movies_data)
+        return context
+
+
+class SearchPerson(DataMixin, ListView):
+    template_name = 'moviedb/person_list.html'
+
+    def get_queryset(self):
+        if self.request.GET.get('search_form_person'): 
+            query = self.request.GET.get('search_form_person') 
+            self.request.session['search_form_person'] = self.request.GET.get('search_form_person')
+        else:
+            query = self.request.session.get('search_form_person') 
+
+        page = self.kwargs.get('page')
+        url = f"https://api.themoviedb.org/3/search/person?query={query}&include_adult=false&language=en-US&page={page}"
+        return url
+
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        person_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'search_movie')
+        person_data['person'] = person_data.pop('movies')
+        context.update(person_data)
+        return context
+
+class CastList(DataMixin, ListView):
+    template_name = 'moviedb/cast_list.html'
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        cast = f'https://api.themoviedb.org/3/movie/{pk}/credits?api_key={api_key}'
+        response_cast = requests.get(cast)
+        data_cast = response_cast.json()
+        return data_cast['cast']
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cast'] = self.get_queryset
+        context['pk'] = self.kwargs.get('pk')
+        context['path'] = path_for_img
+        return context
+
+class SimilarMovies(DataMixin, ListView):
+    template_name = 'moviedb/similar_movie.html'
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        url = f'https://api.themoviedb.org/3/movie/{pk}/similar?api_key={api_key}'
+        return url
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, None)
+        context['pk'] = self.kwargs.get('pk')
+        context.update(movies_data)
+        return context
+
+
+class DescriptionPersonView(View):
+    template_name = 'moviedb/descripperson.html'
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        url = f'https://api.themoviedb.org/3/person/{pk}?api_key={api_key}'
+        return url
+
+    def post(self, request, pk):
+        if request.method == 'POST':
+            known_for = request.POST.get('known_for')
+            pattern = r"'id': (\d+)"
+            matches = re.findall(pattern, known_for)
+            id_list = [int(match) for match in matches]
+
+            known_for_movie = []
+            for id in id_list:
+                result = self.data_each_movie(id)
+                if len(result) > 3:
+                    known_for_movie.append({'id_movie' : id, 'title' : result['title'], 'poster_path' : result['poster_path']})
+
+            response = requests.get(self.get_queryset())
+            data = response.json()
+            
+            context = {
+                'person': data,
+                'path': path_for_img,
+                'known_for_movie': known_for_movie,
+            }
+            return render (request, self.template_name, context)
         
-        pattern = r"'id': (\d+)"
-        matches = re.findall(pattern, known_for)
-        id_list = [int(match) for match in matches]
-
-    known_for_movie = []
-    def data_each_movie(pk):
+    def data_each_movie(self, pk):
         url_movie = f'https://api.themoviedb.org/3/movie/{pk}?language=en-US&api_key={api_key}'
         response_movie = requests.get(url_movie)
         data_movie = response_movie.json()
-
         return data_movie
 
-    
-    for id in id_list:
-        result = data_each_movie(id)
-        if len(result) > 3:
-            known_for_movie.append({'id_movie' : id, 'title' : result['title'], 'poster_path' : result['poster_path']})
+class DescriptionMovie(View): 
+    template_name ='moviedb/desc.html'
 
-    return render(request, 'moviedb/descripperson.html', {'person' : data, 'path' : path_for_img, 'known_for_movie' : known_for_movie })
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        url = f'https://api.themoviedb.org/3/movie/{pk}?language=en-US&api_key={api_key}'
+        return url
 
-def search_movie(request, page):
-    if request.GET.get('search_form_movie'): 
-        query = request.GET.get('search_form_movie') 
-        request.session['search_form_movie'] = request.GET.get('search_form_movie')
-    else:
-        query = request.session.get('search_form_movie') 
+    def get(self, request, pk):
+        response = requests.get(self.get_queryset())
+        data = response.json()
 
-    url = f"https://api.themoviedb.org/3/search/movie?query={query}&include_adult=false&language=en-US&page={page}"
-    print(url)
-    return render(request, 'moviedb/allmovie_list.html', {'movies' : index(url)[0], 'totalPages':index(url)[1], 'number_page' : index(url)[2], 'page_name': 'search_movie', 'path' : path_for_img})
+        filled_stars = [v + 1 for v in range(int(data['vote_average']))]
+        stars = 10 - int(data['vote_average'])
+        empty_stars = [v + 1 for v in range(stars)]
 
-def search_person(request, page):
-    if request.GET.get('search_form_person'): 
-        query = request.GET.get('search_form_person') 
-        request.session['search_form_person'] = request.GET.get('search_form_person')
-    else:
-        query = request.session.get('search_form_person') 
+        data_countrys = data['production_countries']
+        countrys = map(lambda d: d['name'], data_countrys)
+        list_country = list(countrys)
+        result_country = self.clean_data(list_country)
 
-    url = f"https://api.themoviedb.org/3/search/person?query={query}&include_adult=false&language=en-US&page={page}"
-    print(url)
-    return render(request, 'moviedb/person_list.html', {'person' : index(url)[0], 'totalPages':index(url)[1], 'number_page' : index(url)[2], 'page_name': 'search_person', 'path' : path_for_img})
+        data_companies = data['production_companies']
+        companies = map(lambda d: d['name'], data_companies)
+        list_companies = list(companies)
+        result_companys = self.clean_data(list_companies)
 
-def all_movies(request, page=1):
-    request.session['select_genres'] = []
-    request.session['select_year'] = ''
-    request.session['select_sort'] = ''
-    request.session['search_form_movies'] = ''
-    request.session['search_form_person'] = ''
+        data_genres = data['genres']
+        genres = map(lambda d: d['name'], data_genres)
+        list_genres = list(genres)
+        result_genres = self.clean_data(list_genres)
 
-    years = [i for i in range(2025, 1915, -1)]
+        context = {'d' : data, 
+                   'path' : path_for_img, 
+                   'filled_stars' : filled_stars, 
+                   'empty_stars' : empty_stars, 
+                   'country' : result_country, 
+                   'companys' : result_companys, 
+                   'genres' : result_genres, 
+                   'budget' : self.count_money(str(data['budget'])), 
+                   'revenue' : self.count_money(str(data['revenue']))
+        }
 
+        return render(request, self.template_name, context)
 
-    url = f'https://api.themoviedb.org/3/discover/movie?language=en-US&page={page}'
-    url_genres = f'https://api.themoviedb.org/3/genre/movie/list?api_key={api_key}'
-    response = requests.get(url_genres)
-    data = response.json()
-    return render(request, "moviedb/allmovie_list.html", {"movies": index(url)[0], 'totalPages':index(url)[1], 'page_name': 'home',
-                                                          'genres' : data['genres'], 'path' : path_for_img, 'number_page' : index(url)[2],
-                                                          'years' : years, 'what' : 'movies'})
-
-def descrip(request, pk):
-    url = f'https://api.themoviedb.org/3/movie/{pk}?language=en-US&api_key={api_key}'
-    response = requests.get(url)
-    data = response.json()
-
-    filled_stars = [v + 1 for v in range(int(data['vote_average']))]
-    stars = 10 - int(data['vote_average'])
-    empty_stars = [v + 1 for v in range(stars)]
-
-    def clean_data(data):
+    def clean_data(self, data):
         result = ''
         for d in data:
             if data.index(d) == len(data)-1:
@@ -125,22 +281,7 @@ def descrip(request, pk):
                 result += d + ', '
         return result
 
-    data_countrys = data['production_countries']
-    countrys = map(lambda d: d['name'], data_countrys)
-    list_country = list(countrys)
-    result_country = clean_data(list_country)
-
-    data_companies = data['production_companies']
-    companies = map(lambda d: d['name'], data_companies)
-    list_companies = list(companies)
-    result_companys = clean_data(list_companies)
-    
-    data_genres = data['genres']
-    genres = map(lambda d: d['name'], data_genres)
-    list_genres = list(genres)
-    result_genres = clean_data(list_genres)
-
-    def count_money(sum):
+    def count_money(self, sum):
         res = ''
         counter = 0
         for i in sum[::-1]:
@@ -152,29 +293,7 @@ def descrip(request, pk):
 
         return res[::-1]
 
-    
-    return render(request, 'moviedb/desc.html', {'d' : data, 'path' : path_for_img, 'filled_stars' : filled_stars,
-                                                'empty_stars' : empty_stars, 'country' : result_country,
-                                                'companys' : result_companys, 'genres' : result_genres,
-                                                'budget' : count_money(str(data['budget'])),
-                                                'revenue' : count_money(str(data['revenue']))})
 
-def cast_list(request, pk):
-    cast = f'https://api.themoviedb.org/3/movie/{pk}/credits?api_key={api_key}'
-    response_cast = requests.get(cast)
-    data_cast = response_cast.json()
-
-    return render(request, 'moviedb/cast_list.html', {'cast' : data_cast['cast'], 'pk' : pk, 'path' : path_for_img})
-
-def similar_movies(request, pk):
-    sim_movie = f'https://api.themoviedb.org/3/movie/{pk}/similar?api_key={api_key}'
-    response_sim = requests.get(sim_movie)
-    data_sim = response_sim.json()
-    sim_movie = data_sim.get("results", [])
-
-    
-    return render(request, 'moviedb/similar_movie.html', {'movies' : sim_movie,  'pk' : pk, 'path' : path_for_img})
-    
 
 def filter_movies(request, page):
     if request.GET.get("button") == 'reset':
@@ -232,8 +351,6 @@ def filter_movies(request, page):
     else:
         sort = request.session.get('select_sort')
         url += '&sort_by=' + sort + '.desc'
-
-    # print(url)
 
     relevant_sort_list = {
         "primary_release_date" : 'Release date',
