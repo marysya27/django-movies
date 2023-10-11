@@ -10,14 +10,16 @@
 <div class="list-movies">
     <ul class="ul-list-movies">
         {% for movie in movies %}
-            <a class='link-movie' href="{% url 'desc' movie.id %}">
-                <div class="movie">
-                    <p class="vote_average-list">{{ movie.vote_average }} <span class="star-icon">&#9733;</span></p>
-                    <img class="movie-poster-list" src="{{ path|add:movie.poster_path }}" alt="">
-                    <li class="movie-title-list">{{ movie.title }}</li>
-                    <p class="release_date-list">{{ movie.release_date }}</p>
-                </div>
-             </a>
+            {% if movie.poster_path %}
+                <a class='link-movie' href="{% url 'desc' movie.id %}">
+                    <div class="movie">
+                        <p class="vote_average-list">{{ movie.vote_average }} <span class="star-icon">&#9733;</span></p>
+                        <img class="movie-poster-list" src="{{ path|add:movie.poster_path }}" alt="">
+                        <li class="movie-title-list">{{ movie.title }}</li>
+                        <p class="release_date-list">{{ movie.release_date }}</p>
+                    </div>
+                </a>
+            {% endif %}                
         {% endfor %}
     </ul>
 </div>

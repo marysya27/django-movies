@@ -307,7 +307,8 @@ input[type='text'] {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    min-height: 477px;
+    /* min-height: 477px; */
+    min-height: calc(100vh - 187px);;
 }
 
 .cast {
@@ -387,7 +388,7 @@ input[type='text'] {
 
 .all-movies-back {
     display: flex;
-
+    min-height: calc(100vh - 100px);
 }
 
 .list-all-movies {
@@ -397,7 +398,7 @@ input[type='text'] {
 .left-sidebar {
     width: 265px;
     position: relative;
-    min-height: 1170px;
+    min-height: 1230px;
 }
 
 .each-movie-all {
@@ -584,7 +585,7 @@ input[type='text'] {
 
 .not-found {
     margin-top: 30px;
-    height: 100vh;
+    /* height: 100vh; */
     width: -webkit-fill-available;
     justify-content: center;
     display: flex;
@@ -665,62 +666,6 @@ input[type='text'] {
     width: 130px;
 }
    
-
-
-
-
-
-
-
-
-
-
-
-/* 
-option {
-    background-color: #6c2c2c;
-}
-.selected {
-    background-color: #e79f9f;
-} */
-
-/* .sort-ul {
-
-} */
-
-/* .sort-ul {
-    display: none;
-    background-color: #eba4a4;
-} */
-
-/* 
-.sort-ul {
-    display: none;
-    background-color: #eba4a4;
-}
-
-.sort-input:checked ~ .sort-ul {
-    display: block;
-} */
-
-/* .apply-select-genres:hover + .sort-li {
-    display: flex;
-} */
-
-/* .sort-input:checked ~ .sort-ul {
-    display: block;
-} */
-
-
-
-
-
-
-
-
-
-
-
 
 .footer {
     height: 20px;

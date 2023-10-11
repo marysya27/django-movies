@@ -337,15 +337,22 @@ def filter_movies(request, page):
     if request.method == 'GET' and request.GET.get('year'):
         year = request.GET.get('year')
         request.session['select_year'] = year
-        url += '&primary_release_year=' + str(request.GET.get('year'))
+        if year == 'none':
+            url += '&primary_release_year=' 
+        else:
+            url += '&primary_release_year=' + str(request.GET.get('year'))
     else:
         year = request.session.get('select_year', '')
         url += '&primary_release_year=' + str(year)
 
     if request.method == 'GET' and request.GET.get('sort'):
         sort = request.GET.get('sort')
-        request.session['select_sort'] = sort
-        url += '&sort_by=' + request.GET.get('sort') + '.desc'
+        if sort == 'none':
+            request.session['select_sort'] = sort
+            url += '&sort_by=popularity.desc'
+        else: 
+            request.session['select_sort'] = sort
+            url += '&sort_by=' + request.GET.get('sort') + '.desc'
     elif not request.session['select_sort']: 
         url += '&sort_by=popularity.desc'
     else:
@@ -357,6 +364,7 @@ def filter_movies(request, page):
         "popularity" : 'Popularity',
         "vote_count" : 'Votes count',
         "revenue" : 'Revenue',
+        'none' : None
     }
 
     if not request.session['select_sort']:
@@ -368,7 +376,7 @@ def filter_movies(request, page):
     years = [i for i in range(2025, 1915, -1)]
 
 
-    return render(request, "moviedb/allmovie_list.html", {"movies": index(url)[0], 'totalPages':index(url)[1], 'genres' : data['genres'],
+    return render(request, "moviedb/allmovie_list.html", {"movies": index(url)[0], 'totalPages':index(url)[1], 'number_page' : index(url)[2],  'genres' : data['genres'],
                                                           'path' : path_for_img, 'page_name': 'filter', 'select_genres' : select_g,
                                                           'select_year' : year, 'select_sort' : selected_sort, 'years' : years})
 

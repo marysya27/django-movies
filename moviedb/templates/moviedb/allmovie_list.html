@@ -89,14 +89,16 @@ All movies
     </div>
     {% endif %} 
 </div>
-    <div class="pagination">
-        {% for page in totalPages %}
-            {% if page == number_page  %}
-                <span class="pagin-page select-pagin-page">{{ page }}</span>
-            {% else %}
-                <span class="pagin-page"><a href="{% url page_name page %}">{{ page }}</a></span>
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% if totalPages|length >= 2 %}
+        <div class="pagination">
+            {% for page in totalPages %}
+                {% if page == number_page  %}
+                    <span class="pagin-page select-pagin-page">{{ page }}</span>
+                {% else %}
+                    <span class="pagin-page"><a href="{% url page_name page %}">{{ page }}</a></span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
 
