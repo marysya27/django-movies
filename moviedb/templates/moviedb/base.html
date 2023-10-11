@@ -33,8 +33,10 @@
             <a href="{% url 'people' page=1 %}">People</a>
         </div>
     </div>
-    {% block content %}
-    {% endblock %}
+        <div class="all-content">
+            {% block content %}
+            {% endblock %}
+        </div>
     <div class="footer">
         <span>Using </span><a href="https://www.themoviedb.org/">The Movie Data Base</a>
     </div>

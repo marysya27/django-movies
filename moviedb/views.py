@@ -24,20 +24,25 @@ def index(url):
 
     return [movies, totalPages, data['page']]
 
+def round_vote(movies_data):
+    for movie in movies_data['movies']:
+        movie['vote_average'] = round(movie['vote_average'], 1)
+    return movies_data
+
 
 class PopMovies(DataMixin, ListView):
     template_name = 'moviedb/movie_list.html'
 
     def get_queryset(self):
         page = self.kwargs.get('page')
-        print(page)
         url = f"https://api.themoviedb.org/3/movie/popular?language=en-US&page={page}"
         return url
     
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Popular')
-        context.update(movies_data)
+        round_vote(movies_data)
+        context.update(round_vote(movies_data))
         return context
 
 class NowWatchMovies(DataMixin, ListView):
@@ -51,7 +56,7 @@ class NowWatchMovies(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Now watching')
-        context.update(movies_data)
+        context.update(round_vote(movies_data))
         return context
 
 class TopMovies(DataMixin, ListView):
@@ -64,9 +69,8 @@ class TopMovies(DataMixin, ListView):
     
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Now watching')
-        print(movies_data)
-        context.update(movies_data)
+        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Top rated')
+        context.update(round_vote(movies_data))
         return context
 
 class PeopleList(DataMixin, ListView):
@@ -109,7 +113,7 @@ class AllMovies(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'home')
-        context.update(movies_data)
+        context.update(round_vote(movies_data))
         context.update({'years' : self.years,  'genres' : self.data_genres['genres']})
         return context
 
@@ -132,7 +136,7 @@ class SearchMovie(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'search_movie')
-        context.update(movies_data)
+        context.update(round_vote(movies_data))
         return context
 
 
@@ -259,7 +263,7 @@ class DescriptionMovie(View):
         list_genres = list(genres)
         result_genres = self.clean_data(list_genres)
 
-        context = {'d' : data, 
+        context = {'data' : data, 
                    'path' : path_for_img, 
                    'filled_stars' : filled_stars, 
                    'empty_stars' : empty_stars, 

@@ -1,14 +1,16 @@
 {% extends 'moviedb/base.html' %}
 {% block title %}
-{{ d.title }}
+{{ data.title }}
 {% endblock %}
 {% block content %}
-    <img class="poster-desc" src="{{ path|add:d.poster_path }}" alt="">
+    <img class="poster-desc" src="{{ path|add:data.poster_path }}" alt="">
     <div class="context-desc">
-        <h1 class="movie-title-desc">{{ d.title }}</h1>
-        <span class="movie-release-date-desc">Release date: {{ d.release_date }}</span>
-        <span class="movie-tagline-desc">Tagline: {{ d.tagline }}</span>
-        <span class="movie-status-desc">Status: {{ d.status }}</span>
+        <h1 class="movie-title-desc">{{ data.title }}</h1>
+        <span class="movie-release-date-desc">Release date: {{ data.release_date }}</span>
+        {% if data.tagline %}
+            <span class="movie-tagline-desc">Tagline: {{ data.tagline }}</span>
+        {% endif %}
+        <span class="movie-status-desc">Status: {{ data.status }}</span>
         <span class="movie-rating-desc">Rating:</span>
         <div class="rating-stars">
             {% for f in filled_stars %}
@@ -18,7 +20,7 @@
             {% for e in empty_stars %}
             <span class="empty-stars-icon">&#9733;</span>
             {% endfor %}
-            <span class="vote-desc">/ {{ d.vote_average }} / votes {{ d.vote_count }}</span>
+            <span class="vote-desc">/ {{ data.vote_average }} / votes {{ data.vote_count }}</span>
         </div>
         <span class="all-info">Country</span>
         <i class="i-info">{{ country }}</i>
@@ -27,7 +29,7 @@
         <i class="i-info">{{ companys }}</i>
 
         <span class="all-info">Runtime</span>
-        <i class="i-info">{{ d.runtime }} min</i>
+        <i class="i-info">{{ data.runtime }} min</i>
 
         <span class="all-info">Genres</span>
         <i class="i-info">{{ genres }}</i>
@@ -40,11 +42,11 @@
     </div>
 
     <div class="navigation">
-        <p class="plot">PLOT</p><a class="cast-desc" href="{% url 'cast' d.id %}">Cast</a><a class="similar-desc" href="{% url 'similar' d.id %}">Similar movies</a>
+        <p class="plot">PLOT</p><a class="cast-desc" href="{% url 'cast' data.id %}">Cast</a><a class="similar-desc" href="{% url 'similar' data.id %}">Similar movies</a>
     </div>
     <hr class="thin-line">
     <hr class="bold-line">
-    <p class="overview">{{ d.overview }}</p>
+    <p class="overview">{{ data.overview }}</p>
     
     
     

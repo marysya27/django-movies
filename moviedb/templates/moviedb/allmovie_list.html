@@ -68,17 +68,19 @@ All movies
         <div class="list-all-movies">
             <ul class="ul-list-all-movies">
                 {% for movie in movies %}
-                    <a class='link-movie' href="{% url 'desc' movie.id %}">
-                        <div class="each-movie-all">
-                            <div class="inform-each-movie">
-                                <li class="each-movie-title">{{ movie.title }}</li>
-                                <p class="each-movie-release_date">{{ movie.release_date }}</p>
-                                <p class="each-movie-overview">{{ movie.overview }}</p>
+                    {% if movie.poster_path %}
+                        <a class='link-movie' href="{% url 'desc' movie.id %}">
+                            <div class="each-movie-all">
+                                <div class="inform-each-movie">
+                                    <li class="each-movie-title">{{ movie.title }}</li>
+                                    <p class="each-movie-release_date">{{ movie.release_date }}</p>
+                                    <p class="each-movie-overview">{{ movie.overview }}</p>
+                                </div>
+                                <p class="vote-each-movie">{{ movie.vote_average }} <span class="star-icon">&#9733;</span></p>
+                                <img class="each-movie-poster" src="{{ path|add:movie.poster_path }}" alt="">
                             </div>
-                            <p class="vote-each-movie">{{ movie.vote_average }} <span class="star-icon">&#9733;</span></p>
-                            <img class="each-movie-poster" src="{{ path|add:movie.poster_path }}" alt="">
-                        </div>
-                    </a>
+                        </a>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>
