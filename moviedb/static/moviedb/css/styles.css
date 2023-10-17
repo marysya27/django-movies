@@ -26,7 +26,7 @@ a {
     background-color: rgb(43, 43, 43);
     position: fixed;
     width: 100%;
-    z-index: 2;
+    z-index: 3;
 }
 
 .all-content {
@@ -85,8 +85,6 @@ input[type='text'] {
     background-image: url('../images/624b5863cb7db-1024x341.png');
     position: relative;
     display: flex;
-    /* justify-content: center;
-    align-items: center; */
     min-height: 330px;
     margin: 0 auto 20px;
     object-fit: cover;
@@ -276,8 +274,8 @@ input[type='text'] {
     position: absolute;
     top: -5px;
     font-size: 20px;
-    background-color: #ffa507;
-    color: white;
+    background-color: #c2c2c2;
+    color: #434141;
     padding: 3px 10px;
     border-radius: 3px;
     transition: box-shadow 0.3s ease-in-out;
@@ -377,29 +375,64 @@ input[type='text'] {
 
 
 .pagination {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 15px;
+}
+
+.page-numbers {
+    background-color: #bfbdbd;
+    height: 38px;
+    align-items: center;
+    display: flex;
+    border: 1px solid #a7a7a7;
+}
+
+.dot {
+    position: relative;
+    bottom: -2px;
+}
+
+.arrow {
+    width: 20px;
+    background-color: #e4e4e4;
+    padding: 9px 20px;
+    border: 1px solid #a7a7a7;
+}
+
+a.arrow {
+    height: 20px;
+    background-color: #bfbdbd;
+}
+
+.prev {
+    border-radius: 13px 0px 0px 13px;
+    width: 20px;
+}
+
+.next {
+    border-radius: 0px 13px 13px 0px;
+    width: 20px;
 }
 
 .pagin-page {
     margin: 2px;
     font-size: 24px;
-    background-color: #ffa507;
     padding: 3px 6px;
-    border-radius: 5px;
 }
 
 .pagin-page a {
-    color: white;
+    color: #2b2b2b;
+    text-shadow: 0px 1px 0 #767676 ;
 }
 
 .select-pagin-page {
-    background-color: #7a7a7a;
+    color: #767676;;
 }
 
 .all-movies-back {
     display: flex;
-    /* min-height: calc(100vh - 100px); */
 }
 
 .list-all-movies {
@@ -461,6 +494,7 @@ input[type='text'] {
     color: rgb(0, 0, 0);
     padding: 20px 0px 0px 30px;
     font-size: 24px;
+    padding-right: 145px;
 }
 
 .each-movie-release_date {
@@ -552,7 +586,7 @@ input[type='text'] {
 }
 
 .reset-select-genres {
-    margin-top: 50%;
+    margin-top: 40%;
     background-color: white;
     border: 2px solid #393939;
     color: #393939;
@@ -596,7 +630,6 @@ input[type='text'] {
 
 .not-found {
     margin-top: 30px;
-    /* height: 100vh; */
     width: -webkit-fill-available;
     justify-content: center;
     display: flex;
@@ -643,15 +676,19 @@ input[type='text'] {
     margin-left: 120px;
 }
 
-.facts-left-column span:nth-child(1), .facts-left-column span:nth-child(3), .facts-left-column span:nth-child(5) {
+.facts-left-column span:nth-child(1), .facts-left-column span:nth-child(3), .facts-left-column span:nth-child(5), .facts-left-column span:last-child {
     font-weight: bold;
     font-size: 20px;
 }
 
-.facts-left-column span:nth-child(2), .facts-left-column span:nth-child(4), .facts-left-column span:nth-child(6) {
-    margin: 5px 0 15px 0;
+.facts-left-column span:last-child {
+    margin-bottom: 15px;
 }
- 
+
+.facts-left-column span:nth-child(2), .facts-left-column span:nth-child(4), .facts-left-column span:nth-child(6) {
+    margin: 5px 0 5px 0;
+}
+
 
 .known-for-movie-img {
     width: 130px;
@@ -671,12 +708,15 @@ input[type='text'] {
     display: flex;
 }
 
-.known_for_movie-title {
+.known-for-movie-title {
     text-align: center;
     margin: 5px 15px 0 0;
     width: 130px;
 }
-   
+
+.each-known-for-movie {
+    display: grid;
+} 
 
 .footer {
     height: 20px;
@@ -689,4 +729,279 @@ input[type='text'] {
 
 .footer a {
     color: #ffa507;
+}
+
+.filter-toggle-input {
+    display: none;
+}
+
+@media (max-width: 960px) {
+
+    .popular-img {
+        width: 25px;
+        left: 50%;
+        position: relative;
+        transform: translate(-50%, 25%);
+    }
+
+    .header-navigation {
+        display: none;
+    }
+
+    .background-image {
+        min-height: 130px;
+    }
+
+    .background-image span:first-of-type {
+        font-size: 25px;
+        top: 70px;
+        left: 20px;
+    }
+
+    .background-image span:last-of-type {
+        font-size: 16px;
+        top: 95px;
+        left: 20px;
+    }
+
+    .person-list, .cast-photo, .button-each-person-list, .cast {
+        width: 275px; 
+    }
+
+    .link-cast-similar, .cast-similar-description, .cast-desc, .similar-desc {
+        display: none;
+    }
+
+    .link-cast-similar-max-width {
+        left: 60px;
+    }
+
+    .cast-similar-description-max-width {
+        left: 25px;
+    }
+
+    .cast-desc-max-width {
+        right: 70px;
+    }
+
+    .similar-desc-max-width {
+        right: 30px;
+    }
+
+    .description-person {
+        display: block;
+    }
+
+    .description-person-img {
+        margin: 0;
+    }
+    
+    .facts-left-column{
+        margin: 0;
+    }
+
+    .known-for-movie {
+        margin: 10px 0 0 0;
+        padding-bottom: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .each-known-for-movie {
+        display: block;
+    }
+
+    .known-for-movie-title {
+        display: none;
+    }
+
+    .left-column {
+        text-align: center;
+    }
+
+    .facts-left-column {
+        margin-top: 15px;
+    }
+
+    .facts-left-column span:nth-child(1) {
+        font-size: 27px;
+    }
+
+    .biography-each-person-text {
+        padding: 0px 30px;
+    }
+
+    .biography-each-person-span {
+        font-size: 25px;
+        margin-top: 0;
+        text-align: center;
+    }
+
+    .known-for-movie-img  {
+        width: 100px;
+        margin: 0 7px;
+    }
+
+    .known-for-movie-span {
+        margin-left: 30px;
+    }
+
+    
+    .poster-desc {
+        width: 100%;
+        margin: 0;
+    }
+
+    .context-desc {
+        display: grid;
+        position: static;
+    }
+    
+    
+    .bold-line {
+        margin: -2px 30px 0 30px;
+        width: auto;
+    }
+    
+    .overview {
+        padding-bottom: 70px;
+        margin: 5px 25px 0px 25px;
+    }
+    
+    .navigation a {
+        top: 0;
+        padding: 1px 7px;
+        background-color: transparent;
+        top: -5px;
+    }
+
+    .cast-desc {
+        right: 180px;
+    }
+    
+    .similar-desc {
+        right: 30px;
+    }
+    
+    .pagination {
+        margin-bottom: 60px;
+    }
+    
+    .footer-max-width {
+        display: flex;
+        height: 50px;
+        background-color: rgb(241, 241, 241);
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        z-index: 2;
+    }
+    
+    .footer-max-width a {
+        flex: 1;
+        justify-content: center;
+        display: grid;
+        color: rgb(0, 0, 0);
+    }
+    
+    .pagin-page {
+        font-size: 20px;
+    }
+    
+    .arrow.next, .arrow.prev {
+        padding: 9px;
+    }
+    
+    .footer, .name-each-person{
+        display: none;
+    }
+}
+
+
+@media (min-width: 960px) {
+    
+    .footer-max-width, .link-cast-similar-max-width, .cast-similar-description-max-width, 
+    .similar-desc-max-width, .cast-desc-max-width, .name-each-person-max-width {
+        display: none;
+    }
+  
+}
+
+@media (max-width: 760px) {
+
+    .filter-div {
+        display: none;
+    }
+    
+    .filter-toggle-input:checked ~ .filter-div {
+        display: block;
+    }
+
+
+    .filter-toggle-label {
+        position: fixed;
+        top: 12px;
+        right: 8px;
+        z-index: 3;
+    }
+
+    .filter-div {
+        position: absolute;
+        background-color: white;
+        width: 100%;
+        top: 45px;
+        z-index: 2;
+    }
+
+    .left-sidebar {
+        width: auto;
+        min-height: 820px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+        padding-top: 10px;
+    }
+
+    .ul-genres {
+        width: auto;
+        text-align: center;
+    }
+
+    .reset-select-genres {
+        margin-top: 30%;
+    }
+
+    .li-select-genre {
+        display: inline;
+    }
+
+
+    .filter-icon {
+        display: block;
+    }
+
+    .title-header {
+        display: none;
+    }
+
+    .home-page-image {
+        margin: 10px -5px 10px 5px;
+    }
+}
+
+@media (min-width: 760px) {
+
+    .filter-div {
+        display: block;
+    }
+
+    .filter-toggle-label {
+        display: none;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .footer-max-width a {
+        font-size: 12px;
+    }
 }

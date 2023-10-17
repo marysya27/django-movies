@@ -13,13 +13,13 @@
     <div class="header" >
         <a href="{% url 'home' page=1 %}"><img class="home-page-image" src="../../static/moviedb/images/home-image.png" alt=""></a>
         <p class="title-header">Django-Movies</p>
-        {% if page_name == 'people' or page_name == 'search_person' %}
+        {% if searchperson %}
             <form action="{% url 'search_person' page=1 %}">
                 {% csrf_token %}
                 <input type="text" name="search_form_person" placeholder="Search...">
                 <button class="button-search" type="submit"><svg width="23px" height="23px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.6725 16.6412L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
             </form>
-        {% elif page_name == 'home' or page_name == 'search_movie'  or page_name == 'filter' %}
+        {% elif searchmovie %}
             <form action="{% url 'search_movie' page=1 %}">
                 {% csrf_token %}
                 <input type="text" name="search_form_movie" placeholder="Search...">
@@ -36,9 +36,74 @@
         <div class="all-content">
             {% block content %}
             {% endblock %}
+            {% if totalPages|length >= 2 %}
+            <div class="pagination">
+                {% if number_page != 1 %}
+                    <a class="arrow prev" href="{% url page_name number_page|add:-1 %}">
+                        <img class="prev" src="../../static/moviedb/images/arrow-prev-svgrepo-com.png" alt="">
+                    </a >
+                {% else %}
+                    <img class="arrow prev" src="../../static/moviedb/images/arrow-prev-svgrepo-com.png" alt="">
+                {% endif %}
+                <div class="page-numbers">
+                    {% if number_page >= 4 %}
+                            <span class="pagin-page"><a href="{% url page_name 1 %}">1</a></span>
+                        {% if number_page > 4 %}
+                            <span class="dot">...</span>
+                        {% endif %}
+                    {% endif %}
+                        {% for page in totalPages %}
+                            {% if page == number_page  %}
+                                <span class="pagin-page select-pagin-page">{{ page }}</span>
+                            {% else %}
+                                {% if totalPages|length > 5 %}
+                                    {% if page >= number_page|add:-2 and page <= number_page|add:2  %}
+                                        <span class="pagin-page"><a href="{% url page_name page %}">{{ page }}</a></span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="pagin-page"><a href="{% url page_name page %}">{{ page }}</a></span>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% if totalPages|length > 5 %}
+                        {% if number_page >= 4 and number_page <= totalPages|length|add:-3 or number_page < 4 %}
+                            {% if number_page >= 4 and number_page < totalPages|length|add:-3 or number_page < 4 %}
+                                <span class="dot">...</span>
+                            {% endif %}
+                            <span class="pagin-page"><a href="{% url page_name totalPages|length %}">{{ totalPages|length }}</a></span>
+                         {% endif %}
+                    {% endif %}
+                    </div>
+                {% if number_page != totalPages|length %}
+                    <a class="arrow next" href="{% url page_name number_page|add:1 %}">
+                        <img class="next" src="../../static/moviedb/images/arrow-next-svgrepo-com.png" alt="">
+                    </a>
+                {% else %}
+                    <img class="arrow next" src="../../static/moviedb/images/arrow-next-svgrepo-com.png" alt="">
+                {% endif %}
+            </div>
+        {% endif %}
         </div>
     <div class="footer">
         <span>Using </span><a href="https://www.themoviedb.org/">The Movie Data Base</a>
+    </div>
+    <div class="footer-max-width">
+        <a href="{% url 'Popular' page=1 %}">
+            <img class="popular-img" src="../../static/moviedb/images/popylar.png" alt="">
+            Popular
+        </a>
+        <a href="{% url 'Now watching' page=1 %}">
+            <img class="popular-img" src="../../static/moviedb/images/nowwatching.png" alt="">
+            Now watching
+        </a>
+        <a href="{% url 'Top rated' page=1 %}">
+            <img class="popular-img" src="../../static/moviedb/images/toprated.png" alt="">
+            Top rated
+        </a>
+        <a href="{% url 'people' page=1 %}">
+            <img class="popular-img" src="../../static/moviedb/images/people.png" alt="">
+            People
+        </a>
     </div>
 </body>
 </html>

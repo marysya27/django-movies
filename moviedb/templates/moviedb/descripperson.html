@@ -8,6 +8,7 @@
     <div class="left-column">
         <img class="description-person-img" src="{{ path|add:person.profile_path }}" alt="">
         <div class="facts-left-column">
+            <span class="name-each-person-max-width">{{ person.name }}</span>
             <span>Birthday</span>
             <span>{{ person.birthday }}</span>
             {% if person.deathday %}
@@ -29,9 +30,9 @@
 <span class="known-for-movie-span">Known For</span>
 <div class="known-for-movie">
     {% for k in known_for_movie %}
-        <div style="display: grid;">
+        <div class="each-known-for-movie">
             <a href="{% url 'desc' k.id_movie %}"><img class="known-for-movie-img" src="{{ path|add:k.poster_path }}" alt=""></a>
-            <span class="known_for_movie-title">{{ k.title }}</span>
+            <span class="known-for-movie-title">{{ k.title }}</span>
         </div>
     {% endfor %}
 </div>

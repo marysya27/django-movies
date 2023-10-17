@@ -18,51 +18,59 @@ All movies
         {% if page_name == 'search_movie' %}
             <span></span>
         {% else %}
-            <form class="left-sidebar" method="get" action="{% url 'filter' page=1 %}">
-                {% csrf_token %}
-                <ul class="ul-genres">
-                    <div>
-                        {% for genre in genres %}
-                            <li class="li-select-genre">
-                                {% if genre.id in select_genres %}
-                                    <input type="checkbox" class="genre custom-checkbox-selected" name="genres" value="{{ genre.id }}">
-                                {% else %}
-                                    <input type="checkbox" class="genre custom-checkbox" name="genres" value="{{ genre.id }}">
-                                {% endif %}
-                                <span class="select-button-genre">{{ genre.name }}</span>
-                            </li>
-                        {% endfor %}
-                    </div>
-                </ul>
-                <div class="select-year-sort">
-                    <select class="year-sort" name="year" id="year">
-                        {% if select_year %}
-                            <option value="" disabled selected>{{ select_year }}</option>
-                        {% else %}
-                            <option value="" disabled selected>Year</option>
-                        {% endif %}
-                        <option value="none">None</option>
-                        {% for year in years %}
-                            <option value="{{ year }}">{{ year }}</option>
-                        {% endfor %}
-                    </select>
-                    <br>
-                    <select class='year-sort' name="sort" id="sort">
-                        {% if select_sort == 0 or not select_sort %}
-                            <option value="" disabled selected>Sort by</option>
-                        {% else %}
-                            <option value="" disabled selected>{{ select_sort }}</option>
-                        {% endif %} 
-                        <option value="none">None</option>
-                        <option value="primary_release_date">Release date</option>
-                        <option value="popularity">Popularity</option>
-                        <option value="vote_count">Votes count</option>
-                        <option value="revenue">Revenue</option>
-                    </select>
-                </div>    
-                <button class="apply-select-genres" name='button' value="apply" type="submit">Apply Filters</button>
-                <button class="apply-select-genres reset-select-genres" name='button' value="reset" type="submit">Reset</button>
-            </form>
+        <div class="filter-icon">
+            <input type="checkbox" id="filter-toggle" class="filter-toggle-input">
+            <label for="filter-toggle" class="filter-toggle-label">
+                <svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Edit / Select_Multiple"> <path id="Vector" d="M3 9V19.4C3 19.9601 3 20.2399 3.10899 20.4538C3.20487 20.642 3.35774 20.7952 3.5459 20.8911C3.7596 21 4.0395 21 4.59846 21H15.0001M17 8L13 12L11 10M7 13.8002V6.2002C7 5.08009 7 4.51962 7.21799 4.0918C7.40973 3.71547 7.71547 3.40973 8.0918 3.21799C8.51962 3 9.08009 3 10.2002 3H17.8002C18.9203 3 19.4801 3 19.9079 3.21799C20.2842 3.40973 20.5905 3.71547 20.7822 4.0918C21.0002 4.51962 21.0002 5.07969 21.0002 6.19978L21.0002 13.7998C21.0002 14.9199 21.0002 15.48 20.7822 15.9078C20.5905 16.2841 20.2842 16.5905 19.9079 16.7822C19.4805 17 18.9215 17 17.8036 17H10.1969C9.07899 17 8.5192 17 8.0918 16.7822C7.71547 16.5905 7.40973 16.2842 7.21799 15.9079C7 15.4801 7 14.9203 7 13.8002Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+            </label>
+            <div class="filter-div">
+                <form class="left-sidebar" method="get" action="{% url 'filter' page=1 %}">
+                    {% csrf_token %}
+                    <ul class="ul-genres">
+                        <div>
+                            {% for genre in genres %}
+                                <li class="li-select-genre">
+                                    {% if genre.id in select_genres %}
+                                        <input type="checkbox" class="genre custom-checkbox-selected" name="genres" value="{{ genre.id }}">
+                                    {% else %}
+                                        <input type="checkbox" class="genre custom-checkbox" name="genres" value="{{ genre.id }}">
+                                    {% endif %}
+                                    <span class="select-button-genre">{{ genre.name }}</span>
+                                </li>
+                            {% endfor %}
+                        </div>
+                    </ul>
+                    <div class="select-year-sort">
+                        <select class="year-sort" name="year" id="year">
+                            {% if select_year %}
+                                <option value="" disabled selected>{{ select_year }}</option>
+                            {% else %}
+                                <option value="" disabled selected>Year</option>
+                            {% endif %}
+                            <option value="none">None</option>
+                            {% for year in years %}
+                                <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <select class='year-sort' name="sort" id="sort">
+                            {% if select_sort == 0 or not select_sort %}
+                                <option value="" disabled selected>Sort by</option>
+                            {% else %}
+                                <option value="" disabled selected>{{ select_sort }}</option>
+                            {% endif %} 
+                            <option value="none">None</option>
+                            <option value="primary_release_date">Release date</option>
+                            <option value="popularity">Popularity</option>
+                            <option value="vote_count">Votes count</option>
+                            <option value="revenue">Revenue</option>
+                        </select>
+                    </div>    
+                    <button class="apply-select-genres" name='button' value="apply" type="submit">Apply Filters</button>
+                    <button class="apply-select-genres reset-select-genres" name='button' value="reset" type="submit">Reset</button>
+                </form>
+            </div>
+        </div>
         {% endif %}
     {% if movies %}
         <div class="list-all-movies">
@@ -91,16 +99,5 @@ All movies
     </div>
     {% endif %} 
 </div>
-    {% if totalPages|length >= 2 %}
-        <div class="pagination">
-            {% for page in totalPages %}
-                {% if page == number_page  %}
-                    <span class="pagin-page select-pagin-page">{{ page }}</span>
-                {% else %}
-                    <span class="pagin-page"><a href="{% url page_name page %}">{{ page }}</a></span>
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
 {% endblock %}
 

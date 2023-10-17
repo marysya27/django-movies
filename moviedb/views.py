@@ -6,8 +6,6 @@ from decouple import config
 
 from .utils import *
 
-path_for_img = 'https://image.tmdb.org/t/p/w500'
-
 api_key = config('API_KEY')
 
 def index(url):
@@ -16,8 +14,8 @@ def index(url):
     })
     data = response.json()
     movies = data.get("results", [])
-    if data['total_pages'] > 20:
-        total = 20
+    if data['total_pages'] > 100:
+        total = 100
         totalPages = [pag + 1 for pag in range(total)]
     else:
         totalPages = [pag + 1 for pag in range(data['total_pages'])]
@@ -43,6 +41,7 @@ class PopMovies(DataMixin, ListView):
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Popular')
         round_vote(movies_data)
         context.update(round_vote(movies_data))
+        context.update({'searchmovie' : True})
         return context
 
 class NowWatchMovies(DataMixin, ListView):
@@ -57,6 +56,7 @@ class NowWatchMovies(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Now watching')
         context.update(round_vote(movies_data))
+        context.update({'searchmovie' : True})
         return context
 
 class TopMovies(DataMixin, ListView):
@@ -71,6 +71,7 @@ class TopMovies(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'Top rated')
         context.update(round_vote(movies_data))
+        context.update({'searchmovie' : True})
         return context
 
 class PeopleList(DataMixin, ListView):
@@ -85,6 +86,7 @@ class PeopleList(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         people_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'people')
         people_data['person'] = people_data.pop('movies')
+        people_data['searchperson'] = True
         context.update(people_data)
         return context
 
@@ -114,7 +116,7 @@ class AllMovies(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'home')
         context.update(round_vote(movies_data))
-        context.update({'years' : self.years,  'genres' : self.data_genres['genres']})
+        context.update({'years' : self.years,  'genres' : self.data_genres['genres'], 'searchmovie' : True})
         return context
 
 class SearchMovie(DataMixin, ListView):
@@ -137,6 +139,7 @@ class SearchMovie(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'search_movie')
         context.update(round_vote(movies_data))
+        context.update({'searchmovie' : True})
         return context
 
 
@@ -157,8 +160,9 @@ class SearchPerson(DataMixin, ListView):
     
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        person_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'search_movie')
+        person_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'search_person')
         person_data['person'] = person_data.pop('movies')
+        person_data['searchperson'] = True
         context.update(person_data)
         return context
 
@@ -174,9 +178,8 @@ class CastList(DataMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cast'] = self.get_queryset
-        context['pk'] = self.kwargs.get('pk')
-        context['path'] = path_for_img
+        add_context = {'cast' : self.get_queryset, 'pk' : self.kwargs.get('pk'), 'path' : path_for_img, 'searchperson' : True}
+        context.update(add_context)
         return context
 
 class SimilarMovies(DataMixin, ListView):
@@ -189,9 +192,10 @@ class SimilarMovies(DataMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, None)
+        movies_data = calculate_movies_data(index, self.get_queryset, self.get_user_context, 'similar')
         context['pk'] = self.kwargs.get('pk')
-        context.update(movies_data)
+        context.update({'searchmovie' : True})
+        context.update(round_vote(movies_data))
         return context
 
 
@@ -223,6 +227,7 @@ class DescriptionPersonView(View):
                 'person': data,
                 'path': path_for_img,
                 'known_for_movie': known_for_movie,
+                'searchperson' : True
             }
             return render (request, self.template_name, context)
         
@@ -271,7 +276,8 @@ class DescriptionMovie(View):
                    'companys' : result_companys, 
                    'genres' : result_genres, 
                    'budget' : self.count_money(str(data['budget'])), 
-                   'revenue' : self.count_money(str(data['revenue']))
+                   'revenue' : self.count_money(str(data['revenue'])),
+                   'searchmovie' : True
         }
 
         return render(request, self.template_name, context)
@@ -382,7 +388,7 @@ def filter_movies(request, page):
 
     return render(request, "moviedb/allmovie_list.html", {"movies": index(url)[0], 'totalPages':index(url)[1], 'number_page' : index(url)[2],  'genres' : data['genres'],
                                                           'path' : path_for_img, 'page_name': 'filter', 'select_genres' : select_g,
-                                                          'select_year' : year, 'select_sort' : selected_sort, 'years' : years})
+                                                          'select_year' : year, 'select_sort' : selected_sort, 'years' : years, 'searchmovie' : True})
 
 
 

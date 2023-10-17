@@ -10,6 +10,7 @@
         {% if data.tagline %}
             <span class="movie-tagline-desc">Tagline: {{ data.tagline }}</span>
         {% endif %}
+
         <span class="movie-status-desc">Status: {{ data.status }}</span>
         <span class="movie-rating-desc">Rating:</span>
         <div class="rating-stars">
@@ -43,23 +44,15 @@
 
     <div class="navigation">
         <p class="plot">PLOT</p><a class="cast-desc" href="{% url 'cast' data.id %}">Cast</a><a class="similar-desc" href="{% url 'similar' data.id %}">Similar movies</a>
+        <a class="cast-desc-max-width" href="{% url 'cast' data.id %}">
+            <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.719 19.7519L16.0785 14.6279C15.8908 13.1266 14.6146 12 13.1017 12H12H10.8983C9.38538 12 8.10917 13.1266 7.92151 14.6279L7.28101 19.7519C7.1318 20.9456 8.06257 22 9.26556 22H12H14.7344C15.9374 22 16.8682 20.9456 16.719 19.7519Z" stroke="#2e2e2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <circle cx="12" cy="5" r="3" stroke="#2e2e2e" stroke-width="2"></circle> <circle cx="4" cy="9" r="2" stroke="#2e2e2e" stroke-width="2"></circle> <circle cx="20" cy="9" r="2" stroke="#2e2e2e" stroke-width="2"></circle> <path d="M4 14H3.69425C2.71658 14 1.8822 14.7068 1.72147 15.6712L1.38813 17.6712C1.18496 18.8903 2.12504 20 3.36092 20H7" stroke="#2e2e2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M20 14H20.3057C21.2834 14 22.1178 14.7068 22.2785 15.6712L22.6119 17.6712C22.815 18.8903 21.8751 20 20.6392 20C19.4775 20 18.0952 20 17 20" stroke="#2e2e2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </a>
+        <a class="similar-desc-max-width" href="{% url 'similar' data.id %}">
+            <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.9983 10C20.9862 7.82497 20.8897 6.64706 20.1213 5.87868C19.2426 5 17.8284 5 15 5H12C9.17157 5 7.75736 5 6.87868 5.87868C6 6.75736 6 8.17157 6 11V16C6 18.8284 6 20.2426 6.87868 21.1213C7.75736 22 9.17157 22 12 22H15C17.8284 22 19.2426 22 20.1213 21.1213C21 20.2426 21 18.8284 21 16V15" stroke="#404040" stroke-width="1.5" stroke-linecap="round"></path> <path d="M3 10V16C3 17.6569 4.34315 19 6 19M18 5C18 3.34315 16.6569 2 15 2H11C7.22876 2 5.34315 2 4.17157 3.17157C3.51839 3.82475 3.22937 4.69989 3.10149 6" stroke="#404040" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+        </a>
     </div>
     <hr class="thin-line">
     <hr class="bold-line">
     <p class="overview">{{ data.overview }}</p>
-    
-    
-    
-    
-
-    <!-- {% for c in cast %}
-        <p>{{ c.name }}</p>
-     <img src="{{ path|add:c.profile_path }}" alt=""> 
-    {% endfor %}
-<p>---------------------------</p>
-    {% for s in sim_movie %}
-        <p>{{ s.title }}</p>
-    {% endfor %} -->
-
 {% endblock %}
 
