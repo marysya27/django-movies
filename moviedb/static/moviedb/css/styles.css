@@ -60,7 +60,7 @@ input[type='text'] {
 .button-search {
     background: none;
     border: none;
-    position: absolute;
+    position: fixed;
     top: 18px;
     margin-left: -282px;
 }
@@ -768,6 +768,21 @@ a.arrow {
         width: 275px; 
     }
 
+    .button-search {
+        left: 56px;
+        margin: 0;
+    }
+
+    .star-icon {
+        font-size: 15px;
+        margin-top: -4px;
+    }
+
+    .vote-each-movie {
+        font-size: 15px;
+        padding: 8px 16px 3px 6px;
+    }
+
     .link-cast-similar, .cast-similar-description, .cast-desc, .similar-desc {
         display: none;
     }
@@ -794,7 +809,10 @@ a.arrow {
 
     .description-person-img {
         margin: 0;
+        width: 70%;
+        height: auto;
     }
+
     
     .facts-left-column{
         margin: 0;
