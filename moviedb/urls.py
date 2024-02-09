@@ -1,9 +1,10 @@
 from django.urls import path
 
 from .views import *
+from django.shortcuts import redirect
 
 urlpatterns = [
-    path('', AllMovies.as_view(), name='home'),
+    path('', lambda request: redirect('home', page=1), name='home'),
     path('all_movies/<int:page>', AllMovies.as_view(), name='home'),
     path('pop/<int:page>', PopMovies.as_view(), name='Popular'),
     path('now/<int:page>', NowWatchMovies.as_view(), name='Now watching'),
